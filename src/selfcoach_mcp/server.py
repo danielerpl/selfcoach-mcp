@@ -227,7 +227,22 @@ def main_http(host: str, port: int) -> None:
     """Remote mode. Needs SELFCOACH_HTTP=1 set before this module is imported (the CLI does it)."""
     if not _remote:
         raise SystemExit("Remote mode must be started with: selfcoach-mcp serve --http")
-    mcp.run("streamable-http", host=host, port=port)
+    from urllib.parse import urlparse
+
+    from mcp.server.transport_security import TransportSecuritySettings
+
+    from .config import PUBLIC_URL
+
+    # Keep DNS-rebinding protection on, but accept the public hostname (requests arrive
+    # through a reverse proxy or tunnel with that Host header) as well as local access.
+    public = urlparse(PUBLIC_URL)
+    security = TransportSecuritySettings(
+        enable_dns_rebinding_protection=True,
+        allowed_hosts=[public.netloc, "127.0.0.1:*", "localhost:*", "[::1]:*"],
+        allowed_origins=[PUBLIC_URL, "https://claude.ai", "https://claude.com",
+                         "http://127.0.0.1:*", "http://localhost:*"],
+    )
+    mcp.run("streamable-http", host=host, port=port, transport_security=security)
 
 
 if __name__ == "__main__":
