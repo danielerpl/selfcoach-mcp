@@ -1,5 +1,6 @@
 """MCP server: a few high-level tools that return analysis, not raw JSON."""
 
+import os
 from datetime import date, timedelta
 from typing import Any
 
@@ -32,7 +33,16 @@ Suggestions are training guidance, not medical advice: for pain, illness or
 unusual symptoms tell the athlete to see a professional. Laps in motocross are
 motos. Reply in the user's language."""
 
-mcp = MCPServer("selfcoach", instructions=INSTRUCTIONS)
+_remote = os.getenv("SELFCOACH_HTTP") == "1"
+if _remote:
+    from . import remote
+
+    _provider = remote.Provider()
+    mcp = MCPServer("selfcoach", instructions=INSTRUCTIONS,
+                    auth_server_provider=_provider, auth=remote.auth_settings())
+    remote.install(mcp, _provider)
+else:
+    mcp = MCPServer("selfcoach", instructions=INSTRUCTIONS)
 READ = ToolAnnotations(readOnlyHint=True, openWorldHint=True)
 WRITE_LOCAL = ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False)
 WRITE_GARMIN = ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=True)
@@ -211,6 +221,13 @@ prompts.register(mcp)
 
 def main() -> None:
     mcp.run()
+
+
+def main_http(host: str, port: int) -> None:
+    """Remote mode. Needs SELFCOACH_HTTP=1 set before this module is imported (the CLI does it)."""
+    if not _remote:
+        raise SystemExit("Remote mode must be started with: selfcoach-mcp serve --http")
+    mcp.run("streamable-http", host=host, port=port)
 
 
 if __name__ == "__main__":

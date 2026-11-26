@@ -136,6 +136,24 @@ goals = Table(
     Column("created_at", DateTime(timezone=True)),
 )
 
+oauth_clients = Table(  # remote mode: registered OAuth clients
+    "oauth_clients", metadata,
+    Column("client_id", String, primary_key=True),
+    Column("info", JSON),
+    Column("created_at", DateTime(timezone=True)),
+)
+
+oauth_tokens = Table(  # remote mode: access/refresh tokens, stored as SHA-256 hashes
+    "oauth_tokens", metadata,
+    Column("token_hash", String, primary_key=True),
+    Column("kind", String),  # access | refresh
+    Column("client_id", String, index=True),
+    Column("scopes", String),
+    Column("resource", String),
+    Column("expires_at", BigInteger),
+    Column("pair", String),  # hash of the token issued together with this one
+)
+
 sync_state = Table(
     "sync_state", metadata,
     Column("athlete_id", BigInteger, primary_key=True),

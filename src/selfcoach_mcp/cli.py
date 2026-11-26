@@ -10,6 +10,9 @@ selfcoach-mcp login        one-time login: email, password, MFA code; saves toke
 selfcoach-mcp check        verify tokens, Garmin connection and local database
 selfcoach-mcp sync [-d N]  download the last N days now (default 60, max 730)
 selfcoach-mcp logout       delete saved tokens
+selfcoach-mcp serve --http [--host H] [--port P]
+                        remote mode for claude.ai / mobile (needs SELFCOACH_PUBLIC_URL
+                        and SELFCOACH_PASSPHRASE)
 """
 
 
@@ -44,7 +47,10 @@ def main() -> None:
         return
     parser = argparse.ArgumentParser(prog="selfcoach-mcp", usage=USAGE)
     sub = parser.add_subparsers(dest="cmd")
-    sub.add_parser("serve")
+    sv = sub.add_parser("serve")
+    sv.add_argument("--http", action="store_true")
+    sv.add_argument("--host", default="127.0.0.1")
+    sv.add_argument("--port", type=int, default=8765)
     sub.add_parser("login")
     sub.add_parser("logout")
     sub.add_parser("check")
@@ -53,7 +59,17 @@ def main() -> None:
     s.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
-    if args.cmd == "serve":
+    if args.cmd == "serve" and args.http:
+        import os
+
+        from .config import PASSPHRASE, PUBLIC_URL
+        if not PUBLIC_URL.startswith("https://") or len(PASSPHRASE) < 12:
+            sys.exit("Remote mode needs SELFCOACH_PUBLIC_URL (https://…) and SELFCOACH_PASSPHRASE "
+                     "(at least 12 characters).")
+        os.environ["SELFCOACH_HTTP"] = "1"
+        from .server import main_http
+        main_http(args.host, args.port)
+    elif args.cmd == "serve":
         from .server import main as serve
         serve()
     elif args.cmd == "login":
