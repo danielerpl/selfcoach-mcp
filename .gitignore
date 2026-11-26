@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.pytest_cache/
+
+# Virtual environments
+.venv/
+
+# Personal data: never commit
+data/
+spike/
+*.db
+*.sqlite
+*.token*
+tokens/
+.env
+.DS_Store
