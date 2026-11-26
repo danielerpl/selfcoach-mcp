@@ -6,7 +6,7 @@ from typing import Any
 from mcp.server.mcpserver import MCPServer
 from mcp_types import ToolAnnotations
 
-from . import analysis, sync, workouts
+from . import analysis, prompts, sync, workouts
 from .auth import AuthError
 from .config import ALLOW_WRITE
 
@@ -20,7 +20,8 @@ moderate / hard) -> agree on today's session -> schedule_workout puts it on the
 Garmin calendar so it runs step by step on the watch -> after training,
 analyze_session and add_note (RPE, feelings) -> weekly_review on Sunday to plan
 the next week. Use set_goal once to record the target event: phase-aware advice
-depends on it. trends shows 4-52 week patterns plus insights Garmin does not
+depends on it. Slash commands (MCP prompts) wrap these flows: start, today, plan,
+week, log, progress, goal, coach_report. trends shows 4-52 week patterns plus insights Garmin does not
 compute (intensity distribution, monotony/strain, ramp rate, rest days).
 chart_data returns JSON for visual reports.
 
@@ -203,6 +204,9 @@ def sync_garmin(days: int = 30, force: bool = False) -> str:
         return f"⚠️ {e}"
     return (f"Sync done ({days} days): {r['activities']} activities, "
             f"{r['planned']} planned workouts, {r['daily']} days of metrics.")
+
+
+prompts.register(mcp)
 
 
 def main() -> None:

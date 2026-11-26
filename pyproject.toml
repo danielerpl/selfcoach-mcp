@@ -1,6 +1,6 @@
 [project]
 name = "selfcoach-mcp"
-version = "0.2.0"
+version = "0.3.0"
 description = "Self-coaching for Garmin athletes: an MCP server that gives daily readiness advice, pushes structured workouts to your Garmin watch and finds insights Garmin does not show"
 readme = "README.md"
 license = "MIT"

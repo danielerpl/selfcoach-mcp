@@ -19,3 +19,6 @@ IS_CN = os.getenv("SELFCOACH_CHINA", "0").lower() in ("1", "true", "yes")
 
 # Set to 0 to make the server read-only (no workouts written to Garmin Connect).
 ALLOW_WRITE = os.getenv("SELFCOACH_ALLOW_WRITE", "1").lower() not in ("0", "false", "no")
+
+# Language for the slash-command prompts (e.g. "Italian"). Empty = the athlete's language.
+LANGUAGE = os.getenv("SELFCOACH_LANGUAGE", "").strip()

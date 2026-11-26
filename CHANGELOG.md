@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- 8 slash commands (MCP prompts): `start`, `today`, `plan`, `log`, `week`, `progress`, `goal`,
+  `coach_report`. Each wraps a full coaching routine and asks before writing to Garmin.
+- `SELFCOACH_LANGUAGE` to force the commands' reply language.
+- Docs: commands, how to see tools in Claude Code, local vs claude.ai/mobile.
+
 ## 0.2.0 — first public release
 
 - Daily readiness suggestion (rest / easy / moderate / hard) with reasons in `today_status`.

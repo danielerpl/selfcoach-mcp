@@ -9,7 +9,7 @@ behind the scenes so you know exactly what the server does with your account.
 - [4. Log in (once)](#4-log-in-once)
 - [5. Download your history](#5-download-your-history)
 - [6. Connect your MCP client](#6-connect-your-mcp-client)
-- [7. First conversation](#7-first-conversation)
+- [7. First conversation and commands](#7-first-conversation-and-commands)
 - [8. What data is downloaded, and how it stays fresh](#8-what-data-is-downloaded-and-how-it-stays-fresh)
 - [9. Workouts on your watch](#9-workouts-on-your-watch)
 - [10. Updating, moving, uninstalling](#10-updating-moving-uninstalling)
@@ -166,7 +166,10 @@ claude mcp add selfcoach -s user -- uvx --from git+https://github.com/danielerpl
 claude mcp add selfcoach -s user -- uv --directory /path/to/selfcoach-mcp run selfcoach-mcp
 ```
 
-Check it with `claude mcp list`. The server should appear as connected.
+Check it with `claude mcp list`. The server should appear as connected. Then open a **new**
+session: servers are loaded when a session starts, so a session that was already open (or one
+resumed with `--continue`) won't see it. Inside the session, `/mcp` → *selfcoach* → *View tools*
+lists the tools.
 
 ### Claude Desktop
 
@@ -193,16 +196,32 @@ Use the **full path** to `uvx` (`which uvx` on macOS/Linux, `where uvx` on Windo
 Claude Desktop doesn't see your shell's `PATH`. From a clone, use `"command": "/full/path/to/uv"`
 and `"args": ["--directory", "/path/to/selfcoach-mcp", "run", "selfcoach-mcp"]`.
 
-Fully quit and reopen Claude Desktop. The tools appear under the 🔌/tools icon.
+Fully quit and reopen Claude Desktop. The tools appear under the 🔌/tools icon, and the commands
+in the **+** menu under *selfcoach*.
 
 ### Other clients (Cursor, VS Code, Windsurf, …)
 
 Any client that runs local MCP servers works. Configure a stdio server with command `uvx` and
 args `--from git+https://github.com/danielerpl/selfcoach-mcp selfcoach-mcp`.
 
-## 7. First conversation
+## 7. First conversation and commands
 
-Try, in your own language:
+The quickest way in is the **`start`** command. In Claude Code type `/mcp__selfcoach__start`
+(type `/selfcoach` and autocomplete does the rest); in Claude Desktop pick it from the **+** menu.
+It checks what data you have, asks for your goal and explains the routine.
+
+| Command | When |
+|---|---|
+| `start` | first time |
+| `today` | every morning: suggestion + session for today |
+| `plan [request] [day]` | one workout on the watch, e.g. `/mcp__selfcoach__plan "5x3' Z4" 2026-03-02` |
+| `log [notes]` | after training |
+| `week [week_of]` | Sunday: review + next week's plan |
+| `progress [weeks]` | every few weeks |
+| `goal [description]` | when your goal changes |
+| `coach_report [week_of]` | only if you have a coach |
+
+You don't have to use commands: plain questions work too. Try, in your own language:
 
 1. *"Set my goal: 10 km race on 15 March, aiming for under 50 minutes. I can train 4 days a week,
    1 hour max on weekdays."* → `set_goal`
@@ -289,6 +308,8 @@ Safeguards:
 | Tool times out on first use | The initial download is running. Run `selfcoach-mcp sync --days 60` from the terminal, then retry. |
 | "Could not sync with Garmin, showing cached data" | Garmin is unreachable or tokens expired. Answers use local data; run `selfcoach-mcp check`. |
 | Resting HR marked ⚪ unreliable | No sleep recorded that night, so Garmin estimated it during the day. Wear the watch at night. |
+| Tools or commands not showing in Claude Code | Open a new session (not `--continue`), then `/mcp`. Check `claude mcp list` shows *selfcoach ✔ Connected*. |
+| Not available on claude.ai, the mobile app or in Connectors | Expected: this is a **local** server, it runs on your computer. Only clients on that computer (Claude Code, Claude Desktop, Cursor…) can use it. Each client has its own config: adding it to Claude Code does not add it to Claude Desktop. |
 | Server not showing in Claude Desktop | Use the absolute path to `uvx`, check the JSON is valid, fully quit and reopen the app. Logs: `~/Library/Logs/Claude/mcp*.log` (macOS) or `%APPDATA%\Claude\logs` (Windows). |
 | Workout not on the watch | Sync the watch with Garmin Connect. Check that the watch model supports structured workouts for that sport. |
 | Exercise name rejected | The error lists the closest names in Garmin's catalog. The model retries with one of them. |
