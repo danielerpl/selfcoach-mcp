@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0
+
+- Remote mode: `selfcoach-mcp serve --http` serves MCP over HTTPS with built-in single-user OAuth
+  (dynamic client registration, PKCE, passphrase login page, rotating refresh tokens stored hashed,
+  redirect hosts limited to the Claude apps and localhost, lockout after wrong attempts). Add it to
+  claude.ai as a custom connector to use selfcoach from the Claude mobile apps.
+- `deploy/`: systemd unit and settings template. New guide: docs/remote.md (server install,
+  Cloudflare Tunnel, connecting claude.ai, Claude Code and mobile).
+
 ## 0.3.1
 
 - `today_status` accounts for sessions already done today: after a long or hard one it says

@@ -1,0 +1,24 @@
+# systemd unit for remote mode. Copy to /etc/systemd/system/selfcoach.service,
+# adjust paths, then: systemctl daemon-reload && systemctl enable --now selfcoach
+[Unit]
+Description=selfcoach MCP server (remote mode)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=selfcoach
+Group=selfcoach
+WorkingDirectory=/opt/selfcoach/repo
+# SELFCOACH_HOME, SELFCOACH_PUBLIC_URL, SELFCOACH_PASSPHRASE (root:selfcoach, mode 640)
+EnvironmentFile=/etc/selfcoach/selfcoach.env
+ExecStart=/opt/selfcoach/repo/.venv/bin/selfcoach-mcp serve --http --host 127.0.0.1 --port 8765
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/selfcoach/data
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

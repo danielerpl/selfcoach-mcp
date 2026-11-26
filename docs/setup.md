@@ -309,7 +309,7 @@ Safeguards:
 | "Could not sync with Garmin, showing cached data" | Garmin is unreachable or tokens expired. Answers use local data; run `selfcoach-mcp check`. |
 | Resting HR marked ⚪ unreliable | No sleep recorded that night, so Garmin estimated it during the day. Wear the watch at night. |
 | Tools or commands not showing in Claude Code | Open a new session (not `--continue`), then `/mcp`. Check `claude mcp list` shows *selfcoach ✔ Connected*. |
-| Not available on claude.ai, the mobile app or in Connectors | Expected: this is a **local** server, it runs on your computer. Only clients on that computer (Claude Code, Claude Desktop, Cursor…) can use it. Each client has its own config: adding it to Claude Code does not add it to Claude Desktop. |
+| Not available on claude.ai, the mobile app or in Connectors | A **local** server only works for clients on that computer (Claude Code, Claude Desktop, Cursor…), and each client has its own config. For claude.ai and mobile use [remote mode](remote.md). |
 | Server not showing in Claude Desktop | Use the absolute path to `uvx`, check the JSON is valid, fully quit and reopen the app. Logs: `~/Library/Logs/Claude/mcp*.log` (macOS) or `%APPDATA%\Claude\logs` (Windows). |
 | Workout not on the watch | Sync the watch with Garmin Connect. Check that the watch model supports structured workouts for that sport. |
 | Exercise name rejected | The error lists the closest names in Garmin's catalog. The model retries with one of them. |

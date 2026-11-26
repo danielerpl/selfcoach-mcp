@@ -75,6 +75,10 @@ claude mcp add selfcoach -s user -- uvx --from git+https://github.com/danielerpl
 Open a **new** session (servers are loaded at start-up), type `/` and run the `start` command,
 or just ask: *"How am I today?"*
 
+**On your phone or in claude.ai?** The server can also run on a home server or VPS and be added
+as a custom connector, so it works in every Claude app, mobile included. See
+[remote mode](docs/remote.md).
+
 **The [setup guide](docs/setup.md) explains everything in detail.** It covers how the Garmin
 connection works, MFA, Google/Apple accounts, what data is downloaded and where it goes, other
 clients, running from a clone, and troubleshooting.
@@ -134,6 +138,7 @@ All optional, set as environment variables (in Claude Desktop add an `"env": {â€
 | `SELFCOACH_INITIAL_SYNC_DAYS` | `60` | History downloaded on first use if you skipped `sync` |
 | `SELFCOACH_ALLOW_WRITE` | `1` | `0` = read-only: never write to Garmin Connect |
 | `SELFCOACH_CHINA` | `0` | `1` for accounts on garmin.cn |
+| `SELFCOACH_PUBLIC_URL`, `SELFCOACH_PASSPHRASE` | | Remote mode only: see [docs/remote.md](docs/remote.md) |
 | `SELFCOACH_LANGUAGE` | *(empty)* | Language for the slash commands, e.g. `Italian`; empty = the language you write in |
 
 ## Privacy
