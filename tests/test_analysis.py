@@ -77,3 +77,16 @@ def test_chart_data_is_json():
     db.upsert(db.activities, [activity(1, TODAY)])
     out = json.loads(analysis.chart_data(AID, TODAY - timedelta(days=7), TODAY))
     assert out["activities"][0]["sport"] == "Running"
+
+
+def test_verdict_after_long_session_today_says_done():
+    done = [activity(1, TODAY, type_key="strength_training", duration_s=95 * 60)]
+    verdict, reasons = analysis.readiness_verdict(daily(TODAY, acwr=0.5), [], done, TODAY)
+    assert verdict.startswith("✅ DONE")
+    assert any("already trained today" in r for r in reasons)
+
+
+def test_verdict_after_short_easy_session_caps_intensity():
+    done = [activity(1, TODAY, duration_s=30 * 60)]
+    verdict, _ = analysis.readiness_verdict(daily(TODAY), [], done, TODAY)
+    assert verdict.startswith("Already trained today") and "HARD" not in verdict

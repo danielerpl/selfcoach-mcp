@@ -305,6 +305,21 @@ def readiness_verdict(today: dict, base: list[dict], recent: list[dict], day: da
         verdict = "🟢 HARD is fine: intervals Z4-Z5 or heavy strength"
         if a is not None and a < 0.8:
             verdict += " (load is below your usual: room to build)"
+
+    # The signals above describe readiness for training. If a session is already done today,
+    # the question becomes whether to add another one.
+    done = [x for x in recent if x["date"] == day]
+    if done:
+        label = ", ".join(f"{sport(x['type_key'])} {hm(x['duration_s'])}" for x in done)
+        minutes = sum(x["duration_s"] or 0 for x in done) / 60
+        if any(is_hard(x) for x in done) or minutes >= 60:
+            room = " Readiness leaves room: use it in the next 1-2 days." if verdict[0] in "🟢🟡" else ""
+            verdict = f"✅ DONE for today ({label}): recover, mobility or an easy walk at most.{room}"
+        else:
+            if verdict.startswith("🟢"):
+                verdict = "🟡 MODERATE: steady Z2-Z3 or controlled strength, skip all-out work"
+            verdict = f"Already trained today ({label}). A second session only if short: {verdict}"
+        amber.append(f"already trained today ({label})")
     return verdict, red + amber
 
 

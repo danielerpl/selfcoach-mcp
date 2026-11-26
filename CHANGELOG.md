@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- `today_status` accounts for sessions already done today: after a long or hard one it says
+  "done for today" instead of suggesting a hard session.
+
 ## 0.3.0
 
 - 8 slash commands (MCP prompts): `start`, `today`, `plan`, `log`, `week`, `progress`, `goal`,
